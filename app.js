@@ -63,7 +63,7 @@
           var marker = new google.maps.Marker({position: location, map: map});
 
           var infowindow = new google.maps.InfoWindow({
-            content: "Distance from current location: " +  checkDistance(lat, lng, v.location.latitude, v.location.longitude) + " Miles"
+            content: v.address + ". Distance from current location: " +  checkDistance(lat, lng, v.location.latitude, v.location.longitude) + " Miles"
           });
 
           marker.addListener('click', function() {
