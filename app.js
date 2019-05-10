@@ -3,6 +3,7 @@
       // failed.", it means you probably did not give permission for the browser to
       // locate you.
       var map, infoWindow;
+     
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -34.397, lng: 150.644},
@@ -22,6 +23,15 @@
             infoWindow.setContent('Location found.');
             infoWindow.open(map);
             map.setCenter(pos);
+
+            $.get("https://data.cityofchicago.org/resource/gkur-vufi.json",
+
+              function(response) {
+
+                console.log("in data callback");
+                var data = response;
+                createMarkers(map, data, pos.lat, pos.lng);
+            });
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
@@ -31,13 +41,8 @@
         }
 
 
-        $.get("https://data.cityofchicago.org/resource/gkur-vufi.json",
 
-          function(response) {
-            console.log("in data callback");
-            var data = response;
-            createMarkers(map, data);
-        });
+
       }
 
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -48,8 +53,9 @@
         infoWindow.open(map);
       }
 
-      function createMarkers (map, data) {
+      function createMarkers (map, data, lat, lng) {
         console.log(data);
+        
         $.each(data, function(i,v) {
 
           var location = {lat: parseFloat(v.location.latitude), lng: parseFloat(v.location.longitude) }
@@ -57,7 +63,7 @@
           var marker = new google.maps.Marker({position: location, map: map});
 
           var infowindow = new google.maps.InfoWindow({
-            content: v.dba_name
+            content: "Distance from current location: " +  checkDistance(lat, lng, v.location.latitude, v.location.longitude) + " Miles"
           });
 
           marker.addListener('click', function() {
@@ -65,4 +71,12 @@
           });
 
         });
+      }
+
+      function checkDistance(lat, lng, lat0, lng0) {
+        var deglen = 110.25;
+        var x = lat - lat0;
+        var y = (lng - lng0)*Math.cos(lat0);
+        var num = deglen*Math.sqrt(x*x + y*y);
+        return num.toFixed(2).toString();
       }
