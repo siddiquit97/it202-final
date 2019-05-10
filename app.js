@@ -74,7 +74,7 @@
       }
 
       function checkDistance(lat, lng, lat0, lng0) {
-        var deglen = 110.25;
+        var deglen = 68.71;
         var x = lat - lat0;
         var y = (lng - lng0)*Math.cos(lat0);
         var num = deglen*Math.sqrt(x*x + y*y);
